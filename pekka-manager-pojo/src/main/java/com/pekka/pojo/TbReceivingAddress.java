@@ -28,6 +28,9 @@ public class TbReceivingAddress implements Serializable {
 
 	private Date updated;
 
+	public TbReceivingAddress() {
+	}
+
 	public Integer getAddressId() {
 		return addressId;
 	}
