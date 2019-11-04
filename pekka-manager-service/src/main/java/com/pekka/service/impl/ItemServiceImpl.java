@@ -1,7 +1,9 @@
 package com.pekka.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.jms.Destination;
@@ -11,6 +13,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,8 @@ import com.github.pagehelper.PageInfo;
 import com.pekka.common.pojo.EasyUIDataGridResult;
 import com.pekka.common.pojo.PekkaResult;
 import com.pekka.common.util.IDUtils;
+import com.pekka.common.util.JsonUtils;
+import com.pekka.jedis.JedisClient;
 import com.pekka.mapper.TbItemCatMapper;
 import com.pekka.mapper.TbItemDescMapper;
 import com.pekka.mapper.TbItemMapper;
@@ -41,8 +46,13 @@ public class ItemServiceImpl implements ItemService {
 	private TbItemDescMapper descMapper;
 	@Autowired
 	private JmsTemplate jmsTemplate;
+	@Autowired
+	private JedisClient jedisClient;
 	@Resource(name = "itemAddTopic")
 	private Destination destination;
+
+	@Value("${SALES_RANKING}")
+	private String SALES_RANKING;
 
 	@Override
 	public EasyUIDataGridResult getItemList(Integer page, Integer rows) {
@@ -203,6 +213,17 @@ public class ItemServiceImpl implements ItemService {
 	public String getItemCategory(Long cid) {
 		TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(cid);
 		return itemCat.getName();
+	}
+
+	@Override
+	public List<TbItem> getSaelsRanking(String key, int start, int end) {
+		Set<String> zrevrange = jedisClient.zrevrange(SALES_RANKING + key, start, end);
+		List<TbItem> list = new ArrayList<>();
+		for (String string : zrevrange) {
+			TbItem tbItem = JsonUtils.jsonToPojo(string, TbItem.class);
+			list.add(tbItem);
+		}
+		return list;
 	}
 
 }

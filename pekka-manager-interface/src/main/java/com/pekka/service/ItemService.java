@@ -1,5 +1,7 @@
 package com.pekka.service;
 
+import java.util.List;
+
 import com.pekka.common.pojo.EasyUIDataGridResult;
 import com.pekka.common.pojo.PekkaResult;
 import com.pekka.pojo.TbItem;
@@ -105,5 +107,15 @@ public interface ItemService {
 	 * @return
 	 */
 	String getItemCategory(Long cid);
+
+	/**
+	 * 获取商品销量排行榜
+	 * 
+	 * @param key
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<TbItem> getSaelsRanking(String key, int start, int end);
 
 }
