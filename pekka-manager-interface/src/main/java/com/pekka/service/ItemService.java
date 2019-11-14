@@ -118,4 +118,6 @@ public interface ItemService {
 	 */
 	List<TbItem> getSaelsRanking(String key, int start, int end);
 
+	EasyUIDataGridResult getItemByTitle(String itemTitle);
+
 }

@@ -221,9 +221,26 @@ public class ItemServiceImpl implements ItemService {
 		List<TbItem> list = new ArrayList<>();
 		for (String string : zrevrange) {
 			TbItem tbItem = JsonUtils.jsonToPojo(string, TbItem.class);
+			tbItem.setImage(tbItem.getImage().split(",")[0]);
 			list.add(tbItem);
 		}
 		return list;
+	}
+
+	@Override
+	public EasyUIDataGridResult getItemByTitle(String itemTitle) {
+		PageHelper.startPage(1, 30);
+		TbItemExample example = new TbItemExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andTitleLike("%" + itemTitle + "%");
+		List<TbItem> list = itemMapper.selectByExample(example);
+		PageInfo<TbItem> pageInfo = new PageInfo<>(list);
+		EasyUIDataGridResult result = new EasyUIDataGridResult();
+		// result.setRows(list);
+		// result.setTotal(list.size());
+		result.setRows(pageInfo.getList());
+		result.setTotal((int) pageInfo.getTotal());
+		return result;
 	}
 
 }
