@@ -58,7 +58,7 @@ public class UserManagerServiceImpl implements UserManagerService {
 			try {
 				userMapper.deleteByPrimaryKey(id);
 			} catch (RuntimeException e) {
-				PekkaResult.build(500, "id为" + id + "的用户删除失败！");
+				return PekkaResult.build(500, "id为" + id + "的用户删除失败！");
 			}
 		}
 		return PekkaResult.ok();
