@@ -5,7 +5,7 @@ import com.pekka.common.pojo.PekkaResult;
 
 public interface ItemADService {
 
-	EasyUIDataGridResult getItemADList(Long adId);
+	EasyUIDataGridResult getItemADList(String cName);
 
 	/**
 	 * 新增商品广告
@@ -14,7 +14,7 @@ public interface ItemADService {
 	 *            商品id
 	 * @return
 	 */
-	PekkaResult add(Long id, Long adId);
+	PekkaResult add(Long id, String cName);
 
 	/**
 	 * 删除商品广告
@@ -23,5 +23,7 @@ public interface ItemADService {
 	 *            商品id
 	 * @return
 	 */
-	PekkaResult delete(Long[] ids);
+	PekkaResult delete(Long[] ids, String cName);
+
+	EasyUIDataGridResult getItemADHotList();
 }

@@ -20,13 +20,17 @@ public class TbItem implements Serializable {
 
 	private Long cid;
 
+	private Integer isAd;
+
 	private Byte status;
+
+	private String categoryName;
+
+	private Integer isHot;
 
 	private Date created;
 
 	private Date updated;
-
-	private Long adId;
 
 	public Long getId() {
 		return id;
@@ -92,12 +96,36 @@ public class TbItem implements Serializable {
 		this.cid = cid;
 	}
 
+	public Integer getIsAd() {
+		return isAd;
+	}
+
+	public void setIsAd(Integer isAd) {
+		this.isAd = isAd;
+	}
+
 	public Byte getStatus() {
 		return status;
 	}
 
 	public void setStatus(Byte status) {
 		this.status = status;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName == null ? null : categoryName.trim();
+	}
+
+	public Integer getIsHot() {
+		return isHot;
+	}
+
+	public void setIsHot(Integer isHot) {
+		this.isHot = isHot;
 	}
 
 	public Date getCreated() {
@@ -115,20 +143,4 @@ public class TbItem implements Serializable {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
-
-	public Long getAdId() {
-		return adId;
-	}
-
-	public void setAdId(Long adId) {
-		this.adId = adId;
-	}
-
-	@Override
-	public String toString() {
-		return "TbItem [id=" + id + ", title=" + title + ", sellPoint=" + sellPoint + ", price=" + price + ", num="
-				+ num + ", barcode=" + barcode + ", image=" + image + ", cid=" + cid + ", status=" + status
-				+ ", created=" + created + ", updated=" + updated + ", adId=" + adId + "]";
-	}
-
 }

@@ -53,6 +53,22 @@ public class ItemServiceImpl implements ItemService {
 
 	@Value("${SALES_RANKING}")
 	private String SALES_RANKING;
+	@Value("${YZWJ}")
+	private Long YZWJ;
+	@Value("${YAOKONG}")
+	private Long YAOKONG;
+	@Value("${JMPC}")
+	private Long JMPC;
+	@Value("${DMMX}")
+	private Long DMMX;
+	@Value("${JSWJ}")
+	private Long JSWJ;
+	@Value("${MRWJ}")
+	private Long MRWJ;
+	@Value("${CYDIY}")
+	private Long CYDIY;
+	@Value("${YQ}")
+	private Long YQ;
 
 	@Override
 	public EasyUIDataGridResult getItemList(Integer page, Integer rows) {
@@ -90,12 +106,34 @@ public class ItemServiceImpl implements ItemService {
 			item.setId(itemId);
 			// 商品状态:1-正常，2-下架，3-删除
 			item.setStatus((byte) 1);
-			// 是否是广告-1:不是
-			item.setAdId((long) -1);
+			// 是否是广告:0不是，1是
+			item.setIsAd(0);
 			// 创建时间
 			item.setCreated(new Date());
 			// 更新时间
 			item.setUpdated(new Date());
+			// 设置所属大类名称
+			Long cid = item.getCid();
+			String categoryName = "";
+			if (cid > YZWJ && cid < YAOKONG)
+				categoryName = "益智玩具";
+			else if (cid > YAOKONG && cid < JMPC)
+				categoryName = "遥控电动";
+			else if (cid > JMPC && cid < DMMX)
+				categoryName = "积木拼插";
+			else if (cid > DMMX && cid < JSWJ)
+				categoryName = "动漫模型";
+			else if (cid > JSWJ && cid < MRWJ)
+				categoryName = "健身玩具";
+			else if (cid > MRWJ && cid < CYDIY)
+				categoryName = "毛绒玩具";
+			else if (cid > CYDIY && cid < YQ)
+				categoryName = "创意DIY";
+			else if (cid > YQ)
+				categoryName = "乐器";
+			item.setCategoryName(categoryName);
+			// 是否为热卖商品：0非热卖，1热卖
+			item.setIsHot(0);
 			itemMapper.insert(item);
 			// 补全TbitemDesc对象
 			TbItemDesc itemDesc = new TbItemDesc();

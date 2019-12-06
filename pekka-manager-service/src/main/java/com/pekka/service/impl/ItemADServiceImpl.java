@@ -21,10 +21,11 @@ public class ItemADServiceImpl implements ItemADService {
 	private TbItemMapper itemMapper;
 
 	@Override
-	public EasyUIDataGridResult getItemADList(Long adId) {
+	public EasyUIDataGridResult getItemADList(String cName) {
 		TbItemExample example = new TbItemExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andAdIdEqualTo(adId);
+		criteria.andCategoryNameEqualTo(cName);
+		criteria.andIsAdEqualTo(1);
 		List<TbItem> list = itemMapper.selectByExample(example);
 		EasyUIDataGridResult result = new EasyUIDataGridResult();
 		result.setTotal(list.size());
@@ -33,25 +34,61 @@ public class ItemADServiceImpl implements ItemADService {
 	}
 
 	@Override
-	public PekkaResult add(Long id, Long adId) {
-		TbItem item = itemMapper.selectByPrimaryKey(id);
-		// 修改广告分类值 -1：非广告，0：当季热卖;1:益智玩具。。。
-		item.setAdId(adId);
-		item.setUpdated(new Date());
-		itemMapper.updateByPrimaryKeySelective(item);
-		return PekkaResult.ok();
+	public PekkaResult add(Long id, String cName) {
+		TbItem tbItem = itemMapper.selectByPrimaryKey(id);
+		if (cName.equals("当季热卖")) {
+			// 直接修改为热门
+			tbItem.setIsHot(1);
+			tbItem.setUpdated(new Date());
+			itemMapper.updateByPrimaryKeySelective(tbItem);
+			return PekkaResult.ok();
+		} else {
+			if (!(tbItem.getCategoryName().equals(cName))) {
+				// 分类冲突
+				return PekkaResult.build(500, "分类冲突！");
+			} else {
+				if (tbItem.getIsAd() == 1) {
+					return PekkaResult.build(500, "广告重复！");
+				}
+				tbItem.setIsAd(1);
+				tbItem.setUpdated(new Date());
+				itemMapper.updateByPrimaryKeySelective(tbItem);
+				return PekkaResult.ok();
+			}
+		}
 	}
 
 	@Override
-	public PekkaResult delete(Long[] ids) {
-		for (Long id : ids) {
-			TbItem item = itemMapper.selectByPrimaryKey(id);
-			// 将商品广告分类改成-1：非广告
-			item.setAdId((long) -1);
-			item.setUpdated(new Date());
-			itemMapper.updateByPrimaryKeySelective(item);
+	public PekkaResult delete(Long[] ids, String cName) {
+		if (cName.equals("当季热卖")) {
+			for (Long id : ids) {
+				TbItem tbItem = itemMapper.selectByPrimaryKey(id);
+				tbItem.setIsHot(0);
+				tbItem.setUpdated(new Date());
+				itemMapper.updateByPrimaryKeySelective(tbItem);
+			}
+			return PekkaResult.ok();
+		} else {
+			for (Long id : ids) {
+				TbItem tbItem = itemMapper.selectByPrimaryKey(id);
+				tbItem.setIsAd(0);
+				tbItem.setUpdated(new Date());
+				itemMapper.updateByPrimaryKeySelective(tbItem);
+			}
+			return PekkaResult.ok();
 		}
-		return PekkaResult.ok();
+	}
+
+	@Override
+	public EasyUIDataGridResult getItemADHotList() {
+		TbItemExample example = new TbItemExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andIsHotEqualTo(1);
+		List<TbItem> list = itemMapper.selectByExample(example);
+		EasyUIDataGridResult result = new EasyUIDataGridResult();
+		result.setRows(list);
+		result.setTotal(list.size());
+		return result;
 	}
 
 }
