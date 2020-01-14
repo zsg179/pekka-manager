@@ -24,5 +24,6 @@
 	<dubbo:service interface="com.pekka.service.UserManagerService" ref="userManagerServiceImpl" timeout="300000"/>
 	<dubbo:service interface="com.pekka.service.OrderManagerService" ref="orderManagerServiceImpl" timeout="300000"/>
 	<dubbo:service interface="com.pekka.service.ManagerService" ref="managerServiceImpl" timeout="300000"/>
+	<dubbo:service interface="com.pekka.service.LoginManagerService" ref="loginManagerServiceImpl" timeout="300000"/>
 
 </beans>
